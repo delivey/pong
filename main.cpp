@@ -31,7 +31,12 @@ int main() {
     // Create the window
     const int screenX = 800;
     const int screenY = 600;
+
     sf::RenderWindow window(sf::VideoMode(screenX, screenY), "Pong");
+    window.setFramerateLimit(60); // call it once, after creating the window
+
+    sf::Font font;
+    font.loadFromFile("calibri.ttf");
 
     // Bot variables
     float botY = 200.f;
@@ -82,14 +87,11 @@ int main() {
         window.clear(sf::Color::Black);
 
         // Player score
-        sf::Font font;
-        font.loadFromFile("calibri.ttf");
         sf::Text playerScoreText;
         playerScoreText.setFont(font); // font is a sf::Font
         playerScoreText.setString(to_string(playerScore));
         playerScoreText.setCharacterSize(60); // in pixels, not points!
         playerScoreText.move(420.f, 70.0f);
-        window.draw(playerScoreText);
 
         // Bot score 
         sf::Text botScoreText;
@@ -97,13 +99,11 @@ int main() {
         botScoreText.setString(to_string(botScore));
         botScoreText.setCharacterSize(60); // in pixels, not points!
         botScoreText.move(350.f, 70.0f);
-        window.draw(botScoreText);
 
         // Draws the middle line (where the ball spawns)
         sf::RectangleShape middleLine(sf::Vector2f(800.f, 1.f));
         middleLine.rotate(90.f);
         middleLine.move(400.f, 0.0f);
-        window.draw(middleLine);
 
         // Ball
         sf::CircleShape ball(ballRadius);
@@ -116,13 +116,11 @@ int main() {
         sf::RectangleShape playerLine(sf::Vector2f(playerYLength, playerXLength));
         playerLine.rotate(90.f);
         playerLine.move(playerX, playerY);
-        window.draw(playerLine);
 
         // Draws the bot line
         sf::RectangleShape botLine(sf::Vector2f(playerYLength, playerXLength));
         botLine.rotate(90.f);
         botLine.move(botX, botY);
-        window.draw(botLine);
 
         unsigned long int currentTime = time(NULL);
 
@@ -154,7 +152,13 @@ int main() {
             ballY = 300.f; // Returns to default
         }
         
+        window.draw(botScoreText);
+        window.draw(middleLine);
+        window.draw(playerLine);
+        window.draw(botLine);
+        window.draw(playerScoreText);
         window.draw(ball);
+
         window.display(); // Frame
     }
 
@@ -164,14 +168,17 @@ int main() {
 bool detect_collision(float lBallX, float lBallY, float objX, float objY) {
 
     // https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection
-    bool collisionX = objX + playerXLength >= lBallX && ballX + ballRadius >= objX; // x-axis collision
-    bool collisionY = objY + playerYLength >= lBallY && ballY + ballRadius >= objY; // y-axis collision
+    bool collisionX = objX + playerXLength >= lBallX && lBallX + ballRadius >= objX; // x-axis collision
+    bool collisionY = objY + playerYLength >= lBallY && lBallY + ballRadius >= objY; // y-axis collision
     bool collision = collisionX && collisionY;
 
     if (collision) {
-        int hit = objY - playerYLength;
-        cout << "hit" << hit << endl;
-        ballYSpeed=-2;
+        int hit = (objY + playerYLength) - lBallY;
+        if (hit <= 75) {
+            ballYSpeed += 2;
+        } else {
+            ballYSpeed -= 2;
+        }
     }
 
     return collision; // If collision on both axis
