@@ -17,8 +17,7 @@ int botScore = 0;
 bool detect_collision(float ballX, float ballY, float playerX, float playerY);
 bool players_turn();
 
-int main()
-{
+int main() {
     // Create the window
     const int screenX = 800;
     const int screenY = 600;
@@ -43,8 +42,7 @@ int main()
     while (window.isOpen()) {
         // Check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -98,7 +96,6 @@ int main()
         ball.move(ballX, 300.f);
         ballX = ballX + ballSpeed;
         sf::Vector2f ballPosition = ball.getPosition();
-        float ballX = ballPosition.x;
         float ballY = ballPosition.y;
 
         // Draws the player line
@@ -131,7 +128,11 @@ int main()
 
         // If ball out of bounds (lost point)
         if (ballX > screenX) { 
-            ;
+            if (players_turn()) botScore++;
+            else playerScore++;
+
+            ballX = 400.0f;
+            ballSpeed = ballSpeed * -1;
         }
         
         window.draw(ball);

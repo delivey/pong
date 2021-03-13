@@ -6,6 +6,7 @@
         "xutility": "cpp",
         "system_error": "cpp",
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "xiosbase": "cpp"
     }
 }
