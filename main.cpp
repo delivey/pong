@@ -9,12 +9,22 @@ const int ballRadius = 10;
 const int playerYLength = 150;
 const int playerXLength = 10;
 
-int ballSpeed = 6;
+// Player variables
+int playerSpeed = 20;
+float playerY = 200.0f;
+float playerX = 700.f;
+
+// Ball variables
+float ballX = 400.0f;
+float ballY = 300.f;
+
+float ballSpeed = 6;
+float ballYSpeed = 0;
 
 int playerScore = 0;
 int botScore = 0; 
 
-bool detect_collision(float ballX, float ballY, float playerX, float playerY);
+bool detect_collision(float ballX, float ballY, float objX, float objY);
 bool players_turn();
 
 int main() {
@@ -23,17 +33,9 @@ int main() {
     const int screenY = 600;
     sf::RenderWindow window(sf::VideoMode(screenX, screenY), "Pong");
 
-    // Player variables
-    int playerSpeed = 20;
-    float playerY = 200.0f;
-    float playerX = 700.f;
-
     // Bot variables
     float botY = 200.f;
     float botX = 100.f;
-
-    // Ball variables
-    float ballX = 400.0f;
 
     float secondsSinceLastCollision = 0.3f;
     unsigned long int lastCollisionTime = 0;
@@ -105,10 +107,10 @@ int main() {
 
         // Ball
         sf::CircleShape ball(ballRadius);
-        ball.move(ballX, 300.f);
+        ball.move(ballX, ballY);
         ballX = ballX + ballSpeed;
+        ballY = ballY + ballYSpeed;
         sf::Vector2f ballPosition = ball.getPosition();
-        float ballY = ballPosition.y;
 
         // Draws the player line
         sf::RectangleShape playerLine(sf::Vector2f(playerYLength, playerXLength));
@@ -139,12 +141,17 @@ int main() {
         }
 
         // If ball out of bounds (lost point)
-        if (ballX > screenX) { 
-            if (players_turn()) botScore++;
+        if (ballX > screenX || ballX < 0) { 
+
+            bool playersTurn = players_turn();
+            if (playersTurn) botScore++;
             else playerScore++;
 
-            ballX = 400.0f;
-            ballSpeed = ballSpeed * -1;
+            ballYSpeed = 0;
+            ballSpeed = ballSpeed * -1; // Flips direction
+
+            ballX = 400.0f; // Returns to default
+            ballY = 300.f; // Returns to default
         }
         
         window.draw(ball);
@@ -154,13 +161,20 @@ int main() {
     return 0;
 }
 
-bool detect_collision(float ballX, float ballY, float playerX, float playerY) {
+bool detect_collision(float lBallX, float lBallY, float objX, float objY) {
 
     // https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection
-    bool collisionX = playerX + playerXLength >= ballX && ballX + ballRadius >= playerX; // x-axis collision
-    bool collisionY = playerY + playerYLength >= ballY && ballY + ballRadius >= playerY; // y-axis collision
+    bool collisionX = objX + playerXLength >= lBallX && ballX + ballRadius >= objX; // x-axis collision
+    bool collisionY = objY + playerYLength >= lBallY && ballY + ballRadius >= objY; // y-axis collision
+    bool collision = collisionX && collisionY;
 
-    return collisionX && collisionY; // If collision on both axis
+    if (collision) {
+        int hit = objY - playerYLength;
+        cout << "hit" << hit << endl;
+        ballYSpeed=-2;
+    }
+
+    return collision; // If collision on both axis
 }
 
 // Returns true if it's the player's turn
