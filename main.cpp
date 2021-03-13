@@ -55,11 +55,23 @@ int main() {
                 char left = 'G';
                 char right = 'H';
 
+
                 char tpd = event.key.code;
+                int newPosY;
+                bool outOfBounds = false;
                 if (tpd == up) {
-                    playerY = playerY - playerSpeed;
+                    newPosY = playerY - playerSpeed;
+                    if (newPosY <= 0 + playerSpeed * -1) {
+                        outOfBounds = true;
+                    }
                 } else if (tpd == down) {
-                    playerY = playerY + playerSpeed;
+                    newPosY = playerY + playerSpeed;
+                    if (newPosY + playerYLength >= screenY + playerSpeed) {
+                        outOfBounds = true;
+                    }
+                }
+                if (!outOfBounds) {
+                    playerY = newPosY;
                 }
             }
         }
