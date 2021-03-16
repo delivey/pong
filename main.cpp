@@ -18,7 +18,7 @@ float playerX = 700.f;
 float ballX = 400.0f;
 float ballY = 300.f;
 
-float ballSpeed = 6;
+float ballSpeed = 9;
 float ballYSpeed = 0;
 
 int playerScore = 0;
@@ -156,7 +156,6 @@ int main() {
         } 
         if (ballY > screenY || ballY < 0) {
             ballYSpeed *= -1;
-            cout << "Bounce" << endl;
         }
         
         window.draw(botScoreText);
@@ -181,7 +180,7 @@ bool detect_collision(float lBallX, float lBallY, float objX, float objY) {
 
     if (collision) {
         float hit = (((objY + playerYLength) - lBallY) - 75) * -1; // From -75 to 75
-        float speedYPlus = (hit * 0.02);
+        float speedYPlus = (hit * 0.04);
         ballYSpeed += speedYPlus;
     }
 
