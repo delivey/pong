@@ -173,12 +173,9 @@ bool detect_collision(float lBallX, float lBallY, float objX, float objY) {
     bool collision = collisionX && collisionY;
 
     if (collision) {
-        int hit = (objY + playerYLength) - lBallY;
-        if (hit <= 75) {
-            ballYSpeed += 2;
-        } else {
-            ballYSpeed -= 2;
-        }
+        float hit = (((objY + playerYLength) - lBallY) - 75) * -1; // From -75 to 75
+        float speedYPlus = (hit * 0.02);
+        ballYSpeed += speedYPlus;
     }
 
     return collision; // If collision on both axis
