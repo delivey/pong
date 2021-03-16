@@ -27,6 +27,7 @@ int botScore = 0;
 bool detect_collision(float ballX, float ballY, float objX, float objY);
 bool players_turn();
 
+
 int main() {
     // Create the window
     const int screenX = 800;
@@ -138,7 +139,9 @@ int main() {
             lastCollisionTime = time(NULL);
         }
 
-        // If ball out of bounds (lost point)
+
+
+        // If ball out of bounds (vertical) (lost point)
         if (ballX > screenX || ballX < 0) { 
 
             bool playersTurn = players_turn();
@@ -150,6 +153,10 @@ int main() {
 
             ballX = 400.0f; // Returns to default
             ballY = 300.f; // Returns to default
+        } 
+        if (ballY > screenY || ballY < 0) {
+            ballYSpeed *= -1;
+            cout << "Bounce" << endl;
         }
         
         window.draw(botScoreText);
