@@ -10,7 +10,7 @@ const int playerYLength = 150;
 const int playerXLength = 10;
 
 // Player variables
-int playerSpeed = 20;
+int playerSpeed = 40;
 float playerY = 200.0f;
 float playerX = 700.f;
 
@@ -26,7 +26,6 @@ int botScore = 0;
 
 bool detect_collision(float ballX, float ballY, float objX, float objY);
 bool players_turn();
-
 
 int main() {
     // Create the window
@@ -60,9 +59,6 @@ int main() {
 
                 char up = 'I';
                 char down = 'J';
-                char left = 'G';
-                char right = 'H';
-
 
                 char tpd = event.key.code;
                 int newPosY;
