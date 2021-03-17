@@ -143,9 +143,11 @@ int main() {
             bool playersTurn = players_turn();
             if (playersTurn) botScore++;
             else playerScore++;
+            int totalScore = playerScore + botScore;
 
             ballYSpeed = 0;
-            ballSpeed = ballSpeed * -1; // Flips direction
+
+            if (totalScore % 2 == 0) ballSpeed = ballSpeed * -1; // Flips direction
 
             ballX = 400.0f; // Returns to default
             ballY = 300.f; // Returns to default
