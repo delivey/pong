@@ -34,6 +34,8 @@ float botX = 100.f;
 float secondsSinceLastCollision = 0.3f;
 unsigned long int lastCollisionTime = 0;
 
+bool isPlayersBall = true;
+
 bool detect_collision(float ballX, float ballY, float objX, float objY);
 bool players_turn();
 void bounce();
@@ -112,12 +114,18 @@ void out_of_bounds()
         else
             playerScore++;
 
-        int totalScore = playerScore + botScore;
-
         ballYSpeed = 0;
 
-        if (totalScore % 2 == 0)
-            ballSpeed *= -1; // Flips starting ball direction
+        if (isPlayersBall)
+        {
+            ballSpeed = -9; // Flips starting ball direction
+            isPlayersBall = false;
+        }
+        else
+        {
+            ballSpeed = 9;
+            isPlayersBall = true;
+        }
 
         ballX = 400.0f; // Returns to default
         ballY = 300.f;  // Returns to default
