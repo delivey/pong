@@ -42,6 +42,7 @@ void handle_movement(char tpd);
 void draw(sf::RenderWindow &window, sf::Font &font);
 void handle_collisions();
 void handle_events(sf::RenderWindow &window);
+void move_bot();
 
 int main()
 {
@@ -58,7 +59,8 @@ int main()
         handle_collisions();
         out_of_bounds();
         bounce();
-        draw(window, font); // D
+        move_bot();
+        draw(window, font);
     }
 
     return 0;
@@ -93,7 +95,7 @@ bool players_turn()
 
 void bounce()
 {
-    if (ballY > screenY || ballY < 10)
+    if (ballY > screenY || ballY < ballRadius)
     {
         ballYSpeed *= -1;
     }
@@ -115,7 +117,7 @@ void out_of_bounds()
         ballYSpeed = 0;
 
         if (totalScore % 2 == 0)
-            ballSpeed = -9; // Flips starting ball direction
+            ballSpeed *= -1; // Flips starting ball direction
 
         ballX = 400.0f; // Returns to default
         ballY = 300.f;  // Returns to default
@@ -242,4 +244,10 @@ void handle_events(sf::RenderWindow &window)
             handle_movement(tpd);
         }
     }
+}
+
+void move_bot()
+{
+    if (ballY > 0 && ballY < screenY - playerYLength)
+        botY = ballY;
 }
