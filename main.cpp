@@ -39,8 +39,7 @@ bool players_turn();
 void bounce();
 void out_of_bounds();
 void handle_movement(char tpd);
-void draw(sf::RenderWindow &window, sf::Text &botScoreText, sf::Text &playerScoreText, sf::RectangleShape &middleLine,
-          sf::RectangleShape &playerLine, sf::RectangleShape &botLine, sf::CircleShape &ball);
+void draw(sf::RenderWindow &window, sf::Font &font);
 void handle_collisions();
 void handle_events(sf::RenderWindow &window);
 
@@ -55,49 +54,11 @@ int main()
     // Run the program as long as the window is open
     while (window.isOpen())
     {
-        // Check all the window's events that were triggered since the last iteration of the loop
         handle_events(window);
-
-        // Player score
-        sf::Text playerScoreText;
-        playerScoreText.setFont(font); // font is a sf::Font
-        playerScoreText.setString(to_string(playerScore));
-        playerScoreText.setCharacterSize(60); // in pixels, not points!
-        playerScoreText.move(420.f, 70.0f);
-
-        // Bot score
-        sf::Text botScoreText;
-        botScoreText.setFont(font); // font is a sf::Font
-        botScoreText.setString(to_string(botScore));
-        botScoreText.setCharacterSize(60); // in pixels, not points!
-        botScoreText.move(350.f, 70.0f);
-
-        // Draws the middle line (where the ball spawns)
-        sf::RectangleShape middleLine(sf::Vector2f(800.f, 1.f));
-        middleLine.rotate(90.f);
-        middleLine.move(400.f, 0.0f);
-
-        // Ball
-        sf::CircleShape ball(ballRadius);
-        ball.move(ballX, ballY);
-        ballX = ballX + ballSpeed;
-        ballY = ballY + ballYSpeed;
-        sf::Vector2f ballPosition = ball.getPosition();
-
-        // Draws the player line
-        sf::RectangleShape playerLine(sf::Vector2f(playerYLength, playerXLength));
-        playerLine.rotate(90.f);
-        playerLine.move(playerX, playerY);
-
-        // Draws the bot line
-        sf::RectangleShape botLine(sf::Vector2f(playerYLength, playerXLength));
-        botLine.rotate(90.f);
-        botLine.move(botX, botY);
-
         handle_collisions();
         out_of_bounds();
         bounce();
-        draw(window, botScoreText, playerScoreText, middleLine, playerLine, botLine, ball);
+        draw(window, font); // D
     }
 
     return 0;
@@ -193,9 +154,42 @@ void handle_movement(char tpd)
     }
 }
 
-void draw(sf::RenderWindow &window, sf::Text &botScoreText, sf::Text &playerScoreText, sf::RectangleShape &middleLine,
-          sf::RectangleShape &playerLine, sf::RectangleShape &botLine, sf::CircleShape &ball)
+void draw(sf::RenderWindow &window, sf::Font &font)
 {
+    // Player score
+    sf::Text playerScoreText;
+    playerScoreText.setFont(font); // font is a sf::Font
+    playerScoreText.setString(to_string(playerScore));
+    playerScoreText.setCharacterSize(60); // in pixels, not points!
+    playerScoreText.move(420.f, 70.0f);
+
+    // Bot score
+    sf::Text botScoreText;
+    botScoreText.setFont(font); // font is a sf::Font
+    botScoreText.setString(to_string(botScore));
+    botScoreText.setCharacterSize(60); // in pixels, not points!
+    botScoreText.move(350.f, 70.0f);
+
+    // Draws the middle line (where the ball spawns)
+    sf::RectangleShape middleLine(sf::Vector2f(800.f, 1.f));
+    middleLine.rotate(90.f);
+    middleLine.move(400.f, 0.0f);
+
+    // Ball
+    sf::CircleShape ball(ballRadius);
+    ball.move(ballX, ballY);
+    ballX = ballX + ballSpeed;
+    ballY = ballY + ballYSpeed;
+
+    // Draws the player line
+    sf::RectangleShape playerLine(sf::Vector2f(playerYLength, playerXLength));
+    playerLine.rotate(90.f);
+    playerLine.move(playerX, playerY);
+
+    // Draws the bot line
+    sf::RectangleShape botLine(sf::Vector2f(playerYLength, playerXLength));
+    botLine.rotate(90.f);
+    botLine.move(botX, botY);
 
     // Clear the window with black color
     window.clear(sf::Color::Black);
