@@ -31,9 +31,12 @@ const int screenY = 600;
 float botY = 200.f;
 float botX = 100.f;
 
+int winningScore = 1;
+
 float secondsSinceLastCollision = 0.3f;
 unsigned long int lastCollisionTime = 0;
 
+bool gameEnded = false;
 bool isPlayersBall = true;
 
 bool detect_collision(float ballX, float ballY, float objX, float objY);
@@ -113,6 +116,15 @@ void out_of_bounds()
             botScore++;
         else
             playerScore++;
+
+        if (playerScore == winningScore)
+        {
+            gameEnded = true;
+        }
+        else if (botScore == winningScore)
+        {
+            gameEnded = true;
+        }
 
         ballYSpeed = 0;
 
@@ -204,14 +216,16 @@ void draw(sf::RenderWindow &window, sf::Font &font)
     // Clear the window with black color
     window.clear(sf::Color::Black);
 
-    window.draw(botScoreText);
-    window.draw(playerScoreText);
+    if (!gameEnded)
+    {
+        window.draw(botScoreText);
+        window.draw(playerScoreText);
 
-    window.draw(middleLine);
-    window.draw(playerLine);
-    window.draw(botLine);
-
-    window.draw(ball);
+        window.draw(middleLine);
+        window.draw(playerLine);
+        window.draw(botLine);
+        window.draw(ball);
+    }
     window.display();
 }
 
