@@ -31,7 +31,7 @@ const int screenY = 600;
 float botY = 200.f;
 float botX = 100.f;
 
-int winningScore = 1;
+int winningScore = 11;
 
 float secondsSinceLastCollision = 0.3f;
 unsigned long int lastCollisionTime = 0;
@@ -60,11 +60,14 @@ int main()
     // Run the program as long as the window is open
     while (window.isOpen())
     {
-        handle_events(window);
-        handle_collisions();
-        out_of_bounds();
-        bounce();
-        move_bot();
+        if (!gameEnded)
+        {
+            handle_events(window);
+            handle_collisions();
+            out_of_bounds();
+            bounce();
+            move_bot();
+        }
         draw(window, font);
     }
 
@@ -225,6 +228,35 @@ void draw(sf::RenderWindow &window, sf::Font &font)
         window.draw(playerLine);
         window.draw(botLine);
         window.draw(ball);
+    }
+    else
+    {
+        string result;
+        if (botScore > playerScore)
+        {
+            result = "You lost!";
+        }
+        else
+        {
+            result = "You won!";
+        }
+
+        sf::Text resultText;
+        resultText.setFont(font);
+        resultText.setString(result);
+        resultText.setCharacterSize(60);
+        resultText.move(300.f, 70.0f);
+        window.draw(resultText);
+
+        string fullScore;
+        fullScore = to_string(botScore) + " - " + to_string(playerScore);
+
+        sf::Text scoreText;
+        scoreText.setFont(font);
+        scoreText.setString(fullScore);
+        scoreText.setCharacterSize(40);
+        scoreText.move(360.f, 150.0f);
+        window.draw(scoreText);
     }
     window.display();
 }
