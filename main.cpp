@@ -4,50 +4,56 @@ using namespace std;
 #include <string>
 #include <sys/time.h>
 
-const int ballRadius = 10;
+#include "src/bounce.h"
+#include "src/bot.h"
 
-const int playerYLength = 150;
-const int playerXLength = 10;
-
-// Player variables
+// Player
 int playerSpeed = 40;
 float playerY = 200.0f;
 float playerX = 700.f;
+const int playerYLength = 150;
+const int playerXLength = 10;
 
-// Ball variables
-float ballX = 400.0f;
-float ballY = 300.f;
-
-float ballSpeed = 9;
-float ballYSpeed = 0;
-
-int playerScore = 0;
-int botScore = 0;
-
-// Create the window
-const int screenX = 800;
-const int screenY = 600;
-
+// Bot
 float botY = 200.f;
 float botX = 100.f;
 
-int winningScore = 11;
+// Ball
+const float startingBallX = 400.0f;
+const float startingBallY = 300.f;
+float ballX = startingBallX;
+float ballY = startingBallY;
+const float baseBallSpeed = 9;
+float ballSpeed = baseBallSpeed;
+float ballYSpeed = 0;
+const int ballRadius = 10;
 
+// Score
+int playerScore = 0;
+int botScore = 0;
+
+// Window
+const int screenX = 800;
+const int screenY = 600;
+
+// Collision
 float secondsSinceLastCollision = 0.3f;
 unsigned long int lastCollisionTime = 0;
 
+// Game
+int winningScore = 11;
 bool gameEnded = false;
 bool isPlayersBall = true;
 
 bool detect_collision(float ballX, float ballY, float objX, float objY);
 bool players_turn();
-void bounce();
+void bounce(float &ballY, int screenY, int ballRadius, float &ballYSpeed);
 void out_of_bounds();
 void handle_movement(char tpd);
 void draw(sf::RenderWindow &window, sf::Font &font);
 void handle_collisions();
 void handle_events(sf::RenderWindow &window);
-void move_bot();
+void move_bot(float &ballY, float &botY, int screenY, int playerYLength);
 
 int main()
 {
@@ -65,8 +71,8 @@ int main()
             handle_events(window);
             handle_collisions();
             out_of_bounds();
-            bounce();
-            move_bot();
+            bounce(ballY, screenY, ballRadius, ballYSpeed); // no global
+            move_bot(ballY, botY, screenY, playerYLength);  // no global
         }
         draw(window, font);
     }
@@ -85,7 +91,7 @@ bool detect_collision(float lBallX, float lBallY, float objX, float objY)
     if (collision)
     {
         float hit = (((objY + playerYLength) - lBallY) - playerYLength / 2) * -1; // From -75 to 75
-        float speedYPlus = (hit * 0.04);
+        float speedYPlus = hit * 0.04;
         ballYSpeed += speedYPlus;
     }
 
@@ -101,14 +107,7 @@ bool players_turn()
         return false;
 }
 
-void bounce()
-{
-    if (ballY > screenY || ballY < ballRadius)
-    {
-        ballYSpeed *= -1;
-    }
-}
-
+// Checks if ball is out of bounds
 void out_of_bounds()
 {
     if (ballX > screenX || ballX < 0)
@@ -133,17 +132,17 @@ void out_of_bounds()
 
         if (isPlayersBall)
         {
-            ballSpeed = -9; // Flips starting ball direction
+            ballSpeed = baseBallSpeed * -1; // Flips starting ball direction
             isPlayersBall = false;
         }
         else
         {
-            ballSpeed = 9;
+            ballSpeed = baseBallSpeed;
             isPlayersBall = true;
         }
 
-        ballX = 400.0f; // Returns to default
-        ballY = 300.f;  // Returns to default
+        ballX = startingBallX; // Returns to default
+        ballY = startingBallY; // Returns to default
     }
 }
 
@@ -233,13 +232,9 @@ void draw(sf::RenderWindow &window, sf::Font &font)
     {
         string result;
         if (botScore > playerScore)
-        {
             result = "You lost!";
-        }
         else
-        {
             result = "You won!";
-        }
 
         sf::Text resultText;
         resultText.setFont(font);
@@ -265,20 +260,16 @@ void handle_collisions()
 {
     unsigned long int currentTime = time(NULL);
 
-    // Bot collision
     bool botCollision = detect_collision(ballX, ballY, botX, botY);
-    if (botCollision && currentTime - lastCollisionTime > secondsSinceLastCollision)
-    {
-        ballSpeed = ballSpeed * -1;
-        lastCollisionTime = currentTime;
-    }
-
-    // Player collision
     bool playerCollision = detect_collision(ballX, ballY, playerX, playerY);
-    if (playerCollision && currentTime - lastCollisionTime > secondsSinceLastCollision)
+
+    if (botCollision || playerCollision)
     {
-        ballSpeed = ballSpeed * -1;
-        lastCollisionTime = currentTime;
+        if (currentTime - lastCollisionTime > secondsSinceLastCollision)
+        {
+            ballSpeed = ballSpeed * -1;
+            lastCollisionTime = currentTime;
+        }
     }
 }
 
@@ -298,10 +289,4 @@ void handle_events(sf::RenderWindow &window)
             handle_movement(tpd);
         }
     }
-}
-
-void move_bot()
-{
-    if (ballY > 0 && ballY < screenY - playerYLength)
-        botY = ballY;
 }
