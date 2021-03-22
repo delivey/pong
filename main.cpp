@@ -82,9 +82,8 @@ int main()
 
 bool detect_collision(float lBallX, float lBallY, float objX, float objY)
 {
-
     // https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection
-    bool collisionX = objX + playerXLength >= lBallX && lBallX + ballRadius >= objX; // x-axis collision
+    bool collisionX = objX + playerXLength >= lBallX && lBallX >= objX;              // x-axis collision
     bool collisionY = objY + playerYLength >= lBallY && lBallY + ballRadius >= objY; // y-axis collision
     bool collision = collisionX && collisionY;
 
