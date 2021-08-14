@@ -100,10 +100,7 @@ bool detect_collision(float lBallX, float lBallY, float objX, float objY)
 // Returns true if it's the player's turn
 bool players_turn()
 {
-    if (ballSpeed > 0)
-        return true;
-    else
-        return false;
+    return (ballSpeed > 0);
 }
 
 // Checks if ball is out of bounds
@@ -118,11 +115,7 @@ void out_of_bounds()
         else
             playerScore++;
 
-        if (playerScore == winningScore)
-        {
-            gameEnded = true;
-        }
-        else if (botScore == winningScore)
+        if (playerScore == winningScore || botScore == winningScore)
         {
             gameEnded = true;
         }
